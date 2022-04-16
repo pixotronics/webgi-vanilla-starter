@@ -5,13 +5,13 @@
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html assets/**/*",
-    "build": "parcel build index.html"
+    "build": "parcel build index.html --no-minify"
   },
   "dependencies": {  },
   "devDependencies": {
     "typescript": "4.4.4",
-    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.2.89.tgz",
-    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.2.89.tgz",
+    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.2.90.tgz",
+    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.2.90.tgz",
     "parcel-bundler": "^1.6.1",
     "@types/three": "^0.139.0"
   },
