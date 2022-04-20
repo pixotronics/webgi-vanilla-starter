@@ -4,19 +4,30 @@
   "description": "JavaScript and TypeScript example starter project",
   "main": "index.html",
   "scripts": {
-    "start": "parcel index.html assets/**/*",
+    "start": "parcel index.html",
     "build": "parcel build index.html --no-minify"
   },
-  "dependencies": {  },
   "devDependencies": {
-    "typescript": "4.4.4",
-    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.2.90.tgz",
-    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.2.90.tgz",
+    "@types/three": "^0.139.0",
+    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.2.91.tgz",
     "parcel-bundler": "^1.6.1",
-    "@types/three": "^0.139.0"
+    "parcel-plugin-static-files-copy": "^2.6.0",
+    "typescript": "4.4.4",
+    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.2.91.tgz"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"
   },
-  "keywords": ["typescript", "javascript"]
+  "keywords": [
+    "typescript",
+    "javascript"
+  ],
+  "staticFiles": {
+    "staticPath": [
+      {
+        "staticPath": "assets",
+        "staticOutDir": "assets"
+      }
+    ]
+  }
 }
