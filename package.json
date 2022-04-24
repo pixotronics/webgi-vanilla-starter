@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.html --no-minify"
+    "build": "parcel build index.html --no-minify --public-url ./"
   },
   "devDependencies": {
     "@types/three": "^0.139.0",
