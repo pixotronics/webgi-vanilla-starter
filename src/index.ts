@@ -14,7 +14,10 @@ import {
     TemporalAAPlugin,
     AnisotropyPlugin,
 
-    addBasePlugins, ITexture,
+    addBasePlugins,
+    ITexture,
+
+    THREE, // Import THREE.js internals
 } from "webgi";
 import "./styles.css";
 
@@ -28,21 +31,23 @@ async function setupViewer(){
 
     // Add some plugins
     const manager = await viewer.addPlugin(AssetManagerPlugin)
-    await viewer.addPlugin(GBufferPlugin)
-    await viewer.addPlugin(new ProgressivePlugin(32))
-    await viewer.addPlugin(new TonemapPlugin(!viewer.useRgbm))
-    await viewer.addPlugin(SSRPlugin)
-    await viewer.addPlugin(SSAOPlugin)
-    await viewer.addPlugin(DiamondPlugin)
-    await viewer.addPlugin(FrameFadePlugin)
-    await viewer.addPlugin(GLTFAnimationPlugin)
-    await viewer.addPlugin(GroundPlugin)
-    await viewer.addPlugin(BloomPlugin)
-    await viewer.addPlugin(TemporalAAPlugin)
-    await viewer.addPlugin(AnisotropyPlugin)
+
+    // Add plugins individually.
+    // await viewer.addPlugin(GBufferPlugin)
+    // await viewer.addPlugin(new ProgressivePlugin(32))
+    // await viewer.addPlugin(new TonemapPlugin(!viewer.useRgbm))
+    // await viewer.addPlugin(SSRPlugin)
+    // await viewer.addPlugin(SSAOPlugin)
+    // await viewer.addPlugin(DiamondPlugin)
+    // await viewer.addPlugin(FrameFadePlugin)
+    // await viewer.addPlugin(GLTFAnimationPlugin)
+    // await viewer.addPlugin(GroundPlugin)
+    // await viewer.addPlugin(BloomPlugin)
+    // await viewer.addPlugin(TemporalAAPlugin)
+    // await viewer.addPlugin(AnisotropyPlugin)
 
     // or use this to add all main ones at once.
-    // addBasePlugins(viewer)
+    await addBasePlugins(viewer)
 
     viewer.renderer.refreshPipeline()
 
