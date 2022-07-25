@@ -22,11 +22,11 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-  overscroll-behavior: none;
+    overscroll-behavior: none;
 }
 
 body {
-	line-height: 1;
+  line-height: 1;
   overflow-x: hidden;
   font-family: 'DM Sans', sans-serif;
   letter-spacing: -0.5px;
@@ -310,4 +310,14 @@ h1{
   top: 50%;
   transform: translateY(-50%);
   right: 10%;
+}
+
+/*CSS based scroll snapping*/
+body, html{
+  scroll-snap-type: y mandatory;
+  /*scroll-snap-stop: always;*/
+  scroll-behavior: smooth;
+}
+.section{
+  scroll-snap-align: start;
 }

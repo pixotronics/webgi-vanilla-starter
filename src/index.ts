@@ -27,6 +27,8 @@ async function setupViewer(){
     const camera = viewer.scene.activeCamera
     if(camera.controls) camera.controls.enabled = false
 
+    window.scrollTo(0,0)
+
     await timeout(50) // Wait 50ms
 
     gsap.timeline()
@@ -93,8 +95,6 @@ async function setupViewer(){
         camera.targetUpdated(true)
     }
 
-
-    window.scrollTo(0,0)
 
 }
 
