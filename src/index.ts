@@ -40,8 +40,8 @@ async function setupViewer(){
 
         // PERFORMANCE SECTION
         tl.to(camera.position, {x: -2.5, y: 0.2, z: -3.5,
-            scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false}
-            , onUpdate: updatePositions
+            scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false},
+            onUpdate: updatePositions
         })
         .to(controls.target,{x: -0.6, y: -0.1, z: 0.9,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }
@@ -73,8 +73,8 @@ async function setupViewer(){
 
         // // AUTOFOCUS SECTION
         .to(camera.position,{x: -5.5, y: 1.7, z: 5,
-            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }
-            , onUpdate: updatePositions
+            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false },
+            onUpdate: updatePositions
         })
         .to(controls?.target, {x: 0.04, y: 0.2, z: 0.6,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }
