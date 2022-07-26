@@ -1,7 +1,6 @@
 import {
     ViewerApp,
     AssetManagerPlugin,
-    addBasePlugins,
     timeout,
     SSRPlugin,
     mobileAndTabletCheck,
@@ -38,94 +37,71 @@ const lensObjectNames = [
     '+BODY044001',
 ]
 
+let lensComponentsPosition = { x: 0 }
+
 async function setupViewer(){
 
     const viewer = new ViewerApp({
         canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
         useRgbm: true,
         useGBufferDepth: true,
+        isAntialiased: false
     })
 
     const isMobile = mobileAndTabletCheck()
 
     viewer.renderer.displayCanvasScaling = Math.min(window.devicePixelRatio, 1)
 
-    // viewer.renderer.rendererObject.shadowMap.type = PCFSoftShadowMap
-
     const manager = await viewer.addPlugin(AssetManagerPlugin)
     const camera = viewer.scene.activeCamera
-    const position = camera.position.clone()
-    const target = camera.target.clone()
+    const position = camera.position
+    const target = camera.target
+    
+    // Interface Elements
+    const exploreView = document.querySelector('.cam-view-5') as HTMLElement
+    const canvasView = document.getElementById('webgi-canvas') as HTMLElement
+    const exitContainer = document.querySelector('.exit--container') as HTMLElement    
     const loaderElement = document.querySelector('.loader') as HTMLElement
     const header = document.querySelector('.header') as HTMLElement
     const bodyButton =  document.querySelector('.button--body') as HTMLElement
 
-    // await addBasePlugins(viewer)
-    // adding manually
-
+    // Add WEBGi plugins
     await viewer.addPlugin(GBufferPlugin)
-    // await viewer.addPlugin(FullScreenPlugin)
     await viewer.addPlugin(new ProgressivePlugin(32))
     await viewer.addPlugin(new TonemapPlugin(true, true))
     const ssr = await viewer.addPlugin(SSRPlugin)
     const ssao = await viewer.addPlugin(SSAOPlugin)
-    // await viewer.addPlugin(DiamondPlugin)
     await viewer.addPlugin(FrameFadePlugin)
-    // await viewer.addPlugin(GLTFAnimationPlugin)
     await viewer.addPlugin(GroundPlugin)
-    // await viewer.addPlugin(ContactShadowGroundPlugin)
     const bloom = await viewer.addPlugin(BloomPlugin)
-    // await viewer.addPlugin(AnisotropyPlugin)
-    // await viewer.addPlugin(ThinFilmLayerPlugin)
-    // await viewer.addPlugin(NoiseBumpMaterialPlugin)
-    // await viewer.addPlugin(CustomBumpMapPlugin)
-    // await viewer.addPlugin(ClearcoatTintPlugin)
-    // await viewer.addPlugin(VelocityBufferPlugin, false)
     await viewer.addPlugin(TemporalAAPlugin)
-    // await viewer.addPlugin(CameraViewPlugin)
     await viewer.addPlugin(RandomizedDirectionalLightPlugin, false)
-    // await viewer.addPlugin(HDRiGroundPlugin, false)
-    // await viewer.addPlugin(DepthOfFieldPlugin, false)
-    // await viewer.addPlugin(SSContactShadows, false)
-    // await viewer.addPlugin(KTX2LoadPlugin)
 
     ssr!.passes.ssr.passObject.lowQualityFrames = 0
     bloom.pass!.passObject.bloomIterations = 2
     ssao.passes.ssao.passObject.material.defines.NUM_SAMPLES = 4
 
-    //Loader
+    // WEBGi loader
     const importer = manager.importer as AssetImporter
 
-    // Callbacks for start, progress, load complete and stop.
     importer.addEventListener("onStart", (ev) => {
         target.set(8.16, -0.13, 0.51)
         position.set(3.6, -0.04,-3.93)
         onUpdate()
-        // console.log("onStart", ev);
-        // document.getElementById("progressState").textContent =
-        // "Progress: " + (ev.loaded / ev.total) * 100 + "%";
-    });
+    })
+
     importer.addEventListener("onProgress", (ev) => {
-        // console.log("onProgress", (ev.loaded / ev.total));
         const progressRatio = (ev.loaded / ev.total)
-        // loadingBarElement.style.transform = `scaleX(${progressRatio})`
         document.querySelector('.progress')?.setAttribute('style',`transform: scaleX(${progressRatio})`)
-        // "Progress: " + (ev.loaded / ev.total) * 100 + "%";
-    });
+    })
+
     importer.addEventListener("onLoad", (ev) => {
-        // console.log("onLoad", ev)
         introAnimation()
-        // document.getElementById("progressState").textContent =
-        // "Progress: " + "Loaded";
-    });
-    importer.addEventListener("onStop", (ev) => {
-        // console.log("onStop", ev);
-        // document.getElementById("progressState").textContent =
-        // "Progress: " + "Stopped";
-    });
+    })
 
     viewer.renderer.refreshPipeline()
 
+    // WEBGi load model
     await manager.addFromPath("./assets/camera.glb")
 
     const lensObjects: any[] = []
@@ -139,6 +115,7 @@ async function setupViewer(){
 
     if(camera.controls) camera.controls.enabled = false
 
+    // WEBGi mobile adjustments
     if(isMobile){
         ssr.passes.ssr.passObject.stepCount /= 2
         bloom.enabled = false
@@ -147,14 +124,14 @@ async function setupViewer(){
 
     window.scrollTo(0,0)
 
-    await timeout(50) // Wait 50ms
+    await timeout(50)
 
     function introAnimation(){
         const introTL = gsap.timeline()
         introTL
         .to('.loader', {x: '150%', duration: 0.8, ease: "power4.inOut", delay: 1})
         .fromTo(position, {x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, onUpdate}, '-=0.8')
-        .fromTo(target, {x: 3.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4, onUpdate}, '-=4')
+        .fromTo(target, {x: 3.16, y: -0.13, z: 0.51}, {x: isMobile ? -0.1 : 0.86, y: -0.13, z: 0.51, duration: 4, onUpdate}, '-=4')
         .fromTo('.header--container', {opacity: 0, y: '-100%'}, {opacity: 1, y: '0%', ease: "power1.inOut", duration: 0.8}, '-=1')
         .fromTo('.hero--scroller', {opacity: 0, y: '150%'}, {opacity: 1, y: '0%', ease: "power4.inOut", duration: 1}, '-=1')
         .fromTo('.hero--content', {opacity: 0, x: '-50%'}, {opacity: 1, x: '0%', ease: "power4.inOut", duration: 1.8, onComplete: setupScrollAnimation}, '-=1')
@@ -172,31 +149,28 @@ async function setupViewer(){
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
 
-        .to(target,{x: -0.6, y: -0.1, z: 0.9,
+        .to(target,{x: isMobile ? 0.1 : -0.6, y: -0.1, z: 0.9,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .to('.hero--scroller', {opacity: 0, y: '150%',
-            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top center", scrub: 1, immediateRender: false, pin: '.hero--scroller--container',
+            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top center", scrub: 1, immediateRender: false, pin: '.hero--scroller--container'
         }})
 
         .to('.hero--content', {opacity: 0, xPercent: '-100', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top top", scrub: 1, immediateRender: false, pin: '.hero--content',
-            // snap: { snapTo: 1, duration: 0.8, ease: "power4.inOut"}
         }}).addLabel("start")
 
         .fromTo('.performance--content', {opacity: 0, x: '110%'}, {opacity: 1, x: '0%', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container',
-                // snap: { snapTo: 2, duration: 0.8, ease: "power4.inOut"}
         }})
         .addLabel("Performance")
 
         // // POWER SECTION
-        .to(position,  {x: -0.07, y: 5.45, z: -3.7,
+        .to(position,  {x: -0.07, y: isMobile ? 3 : 5.45, z: isMobile ? -1.1 : -3.7,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            // snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
-        .to(target, {x: -0.04, y: -0.52, z: 0.61,
+        .to(target, {x: isMobile ? -0.4 : -0.04, y: isMobile ? -3.8 : -0.52, z: 0.61,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .to('.performance--content', {autoAlpha: 0, ease: "power4.out",
@@ -214,52 +188,43 @@ async function setupViewer(){
         // // AUTOFOCUS SECTION
         .to(position,{x: -5.5, y: 1.7, z: 5,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            // snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
         .to(target, {x: 0.04, y: 0.2, z: 0.6,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
+        })
+        .to(lensComponentsPosition,{x: 1,
+            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate: expandUpdate
         })
         .fromTo('.autofocus--content', {opacity: 0, y: '130%'}, {opacity: 1, y: '0%', duration: 0.5, ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-4", start: "top 20%", end: "top top", scrub: 1, immediateRender: false
         }})
         .addLabel("Autofocus")
 
-        // Explore SECTION
+        // EXPLORE SECTION
         .to(position,{x: -0.3, y: -0.3, z: -4.85,
             scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            // snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
-        .to(target, {x: -0.9, y: -0.17, z: 0.1,
+        .to(target, {x: isMobile ? -0.1 : -0.9, y: -0.17, z: 0.1,
             scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
+        })
+        .to(lensComponentsPosition,{x: 0,
+            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate: expandUpdate
         })
         .fromTo('.explore--content', {opacity: 0, x: '130%'}, {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-5", start: "top bottom", end: "top top", scrub: 1, immediateRender: false
         }})
         .addLabel("Explore")
 
-        let tm = {x: 0}
-        const expandUpdate = ()=> {
-            for (const o of lensObjects) {
-                o.position.z = o.userData.__startPos + tm.x * o.userData.__deltaPos
-            }
-            viewer.setDirty()
-            viewer.renderer.resetShadows()
+    }
+
+    const expandUpdate = ()=> {
+        for (const o of lensObjects) {
+            o.position.z = o.userData.__startPos + lensComponentsPosition.x * o.userData.__deltaPos
         }
-        // Test SECTION
-        tl.to(tm,{x: 1,
-            scrollTrigger: { trigger: ".cam-view-6",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            }, onUpdate: expandUpdate
-        })
-        tl.to(tm,{x: 1,
-            scrollTrigger: { trigger: ".cam-view-7",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            }, onUpdate: expandUpdate
-        })
-        tl.to(tm,{x: 0,
-            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            }, onUpdate: expandUpdate
-        })
+        viewer.setDirty()
+        viewer.renderer.resetShadows()
     }
 
     let needsUpdate = true;
@@ -269,18 +234,11 @@ async function setupViewer(){
 
     viewer.addEventListener('preFrame', ()=>{
         if(needsUpdate){
-            camera.position.copy(position)
-            camera.target.copy(target)
             camera.positionUpdated(false)
             camera.targetUpdated(true)
             needsUpdate = false;
         }
     })
-
-    // INTERFACE ELEMENTS
-    const exploreView = document.querySelector('.cam-view-5') as HTMLElement
-    const canvasView = document.getElementById('webgi-canvas') as HTMLElement
-    const exitContainer = document.querySelector('.exit--container') as HTMLElement
 
     // KNOW MORE EVENT
     document.querySelector('.button-know-more')?.addEventListener('click', () => {
@@ -302,7 +260,7 @@ async function setupViewer(){
         const tlExplore = gsap.timeline()
 
         tlExplore.to(position,{x: 5, y: 0.3, z: -4.5, duration: 2.5, onUpdate})
-        .to(target, {x: 0.16, y: -0.13, z: 0.5, duration: 2.5, onUpdate}, '-=2.5')
+        .to(target, {x: -0.26, y: -0.2, z: 0.9, duration: 2.5, onUpdate}, '-=2.5')
         .fromTo('.header', {opacity: 0}, {opacity: 1, duration: 1.5, ease: "power4.out"}, '-=2.5')
         .to('.explore--content', {opacity: 0, x: '130%', duration: 1.5, ease: "power4.out", onComplete: onCompleteExplore}, '-=2.5')
     }
