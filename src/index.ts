@@ -10,7 +10,8 @@ import {
     TonemapPlugin,
     SSAOPlugin,
     GroundPlugin,
-    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin, IPerspectiveCameraOptions, AssetImporter,
+    FrameFadePlugin,
+    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin, AssetImporter,
 } from "webgi"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -36,6 +37,7 @@ async function setupViewer(){
     const camera = viewer.scene.activeCamera
     const loaderElement = document.querySelector('.loader') as HTMLElement
     const header = document.querySelector('.header') as HTMLElement
+    const bodyButton =  document.querySelector('.button--body') as HTMLElement
 
     if(camera.controls) camera.controls.enabled = false
 
@@ -49,7 +51,7 @@ async function setupViewer(){
     const ssr = await viewer.addPlugin(SSRPlugin)
     const ssao = await viewer.addPlugin(SSAOPlugin)
     // await viewer.addPlugin(DiamondPlugin)
-    // await viewer.addPlugin(FrameFadePlugin)
+    await viewer.addPlugin(FrameFadePlugin)
     // await viewer.addPlugin(GLTFAnimationPlugin)
     await viewer.addPlugin(GroundPlugin)
     // await viewer.addPlugin(ContactShadowGroundPlugin)
@@ -247,7 +249,7 @@ async function setupViewer(){
         const tlExplore = gsap.timeline()
 
         tlExplore.to(camera.position,{x: 5, y: 0.3, z: -4.5, duration: 2.5, onUpdate})
-        .to(camera.target, {x: 0, y: -0.2, z: 0, duration: 2.5}, '-=2.5')
+        .to(camera.target, {x: 0.16, y: -0.13, z: 0.5, duration: 2.5}, '-=2.5')
         .fromTo('.header', {opacity: 0}, {opacity: 1, duration: 1.5, ease: "power4.out"}, '-=2.5')
         .to('.explore--content', {opacity: 0, x: '130%', duration: 1.5, ease: "power4.out", onComplete: onCompleteExplore}, '-=2.5')
     }
@@ -275,10 +277,43 @@ async function setupViewer(){
         tlExit.to(camera.position,{x: -0.3, y: -0.3, z: -4.85, duration: 1.2, ease: "power4.out", onUpdate})
         .to(camera.target, {x: -0.9, y: -0.17, z: 0.1, duration: 1.2, ease: "power4.out"}, '-=1.2')
         .to('.explore--content', {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out"}, '-=1.2')
-
-
+        setLensAppearance(true)
+        lensOnly = false
     }
 
+    // VIEW BODY EVENT
+    let lensOnly = false
+    bodyButton.addEventListener('click', () => {
+        if(lensOnly){
+            setLensAppearance(true)
+            lensOnly = false
+            bodyButton.innerHTML = "view body only"
+        } else{
+            setLensAppearance(false)
+            lensOnly = true
+            bodyButton.innerHTML = "view with lens"
+        }
+    })
+
+    function setLensAppearance(_value: boolean){
+        viewer.scene.findObjectsByName('Circle002')[0].visible = _value
+        viewer.scene.findObjectsByName('+Sphere001001')[0].visible = _value
+        viewer.scene.findObjectsByName('new')[0].visible = _value
+        viewer.scene.findObjectsByName('+Plane008001')[0].visible = _value
+        viewer.scene.findObjectsByName('+SideButtons001')[0].visible = _value
+        viewer.scene.findObjectsByName('Rings2001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Rings1001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Circle003001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Sphere003001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Circle001001')[0].visible = _value
+        viewer.scene.findObjectsByName('Text001')[0].visible = _value
+        viewer.scene.findObjectsByName('Plane006001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Plane005001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Sphere001')[0].visible = _value
+        viewer.scene.findObjectsByName('+Cylinder001')[0].visible = _value
+        viewer.scene.findObjectsByName('+BODY044001')[0].visible = _value
+        viewer.scene.setDirty({sceneUpdate: true})
+    }
 }
 
 setupViewer()

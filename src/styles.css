@@ -23,8 +23,6 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
   overscroll-behavior: none;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
 }
 
 body {
@@ -33,6 +31,11 @@ body {
   overflow-y: hidden;
   font-family: 'DM Sans', sans-serif;
   letter-spacing: -0.5px;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-snap-type: y mandatory;
 }
 
 ol, ul {
@@ -466,7 +469,7 @@ h1{
   pointer-events: none;
 }
 
-.button--exit{
+.button--secondary{
     border-radius: 58px;
     font-weight: 700;
     font-size: 10px;
@@ -481,9 +484,10 @@ h1{
     border: 1px solid black;
     text-transform: uppercase;
     pointer-events: auto;
+    margin-right: 10px;
 }
 
-.button--exit:hover{
+.button--secondary:hover{
   cursor: pointer;
   color: #ffffff;
   background-color: #181818;
