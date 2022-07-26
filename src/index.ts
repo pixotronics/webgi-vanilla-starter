@@ -19,6 +19,25 @@ import "./styles.css"
 
 gsap.registerPlugin(ScrollTrigger)
 
+const lensObjectNames = [
+    'Circle002',
+    '+Sphere001001',
+    'new',
+    '+Plane008001',
+    '+SideButtons001',
+    'Rings2001',
+    '+Rings1001',
+    '+Circle003001',
+    '+Sphere003001',
+    '+Circle001001',
+    'Text001',
+    'Plane006001',
+    '+Plane005001',
+    '+Sphere001',
+    '+Cylinder001',
+    '+BODY044001',
+]
+
 async function setupViewer(){
 
     const viewer = new ViewerApp({
@@ -35,11 +54,11 @@ async function setupViewer(){
 
     const manager = await viewer.addPlugin(AssetManagerPlugin)
     const camera = viewer.scene.activeCamera
+    const position = camera.position.clone()
+    const target = camera.target.clone()
     const loaderElement = document.querySelector('.loader') as HTMLElement
     const header = document.querySelector('.header') as HTMLElement
     const bodyButton =  document.querySelector('.button--body') as HTMLElement
-
-    if(camera.controls) camera.controls.enabled = false
 
     // await addBasePlugins(viewer)
     // adding manually
@@ -79,8 +98,9 @@ async function setupViewer(){
 
     // Callbacks for start, progress, load complete and stop.
     importer.addEventListener("onStart", (ev) => {
-        camera.target.set(8.16, -0.13, 0.51)
-        camera.position.set(3.6, -0.04,-3.93)
+        target.set(8.16, -0.13, 0.51)
+        position.set(3.6, -0.04,-3.93)
+        onUpdate()
         // console.log("onStart", ev);
         // document.getElementById("progressState").textContent =
         // "Progress: " + (ev.loaded / ev.total) * 100 + "%";
@@ -108,6 +128,17 @@ async function setupViewer(){
 
     await manager.addFromPath("./assets/camera.glb")
 
+    const lensObjects: any[] = []
+    for (const obj of lensObjectNames) {
+        const o = viewer.scene.findObjectsByName(obj)[0]
+        o.userData.__startPos = o.position.z
+        o.userData.__deltaPos = -Math.pow(Math.abs(o.position.z)*1.5, 1.25)
+
+        lensObjects.push(o)
+    }
+
+    if(camera.controls) camera.controls.enabled = false
+
     if(isMobile){
         ssr.passes.ssr.passObject.stepCount /= 2
         bloom.enabled = false
@@ -122,8 +153,8 @@ async function setupViewer(){
         const introTL = gsap.timeline()
         introTL
         .to('.loader', {x: '150%', duration: 0.8, ease: "power4.inOut", delay: 1})
-        .fromTo(camera.position, {x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, onUpdate}, '-=0.8')
-        .fromTo(camera.target, {x: 3.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4 }, '-=4')
+        .fromTo(position, {x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, onUpdate}, '-=0.8')
+        .fromTo(target, {x: 3.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4, onUpdate}, '-=4')
         .fromTo('.header--container', {opacity: 0, y: '-100%'}, {opacity: 1, y: '0%', ease: "power1.inOut", duration: 0.8}, '-=1')
         .fromTo('.hero--scroller', {opacity: 0, y: '150%'}, {opacity: 1, y: '0%', ease: "power4.inOut", duration: 1}, '-=1')
         .fromTo('.hero--content', {opacity: 0, x: '-50%'}, {opacity: 1, x: '0%', ease: "power4.inOut", duration: 1.8, onComplete: setupScrollAnimation}, '-=1')
@@ -137,11 +168,11 @@ async function setupViewer(){
         const tl = gsap.timeline({ default: {ease: 'none'}})
 
         // PERFORMANCE SECTION
-        tl.to(camera.position, {x: -2.5, y: 0.2, z: -3.5,
+        tl.to(position, {x: -2.5, y: 0.2, z: -3.5,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
 
-        .to(camera.target,{x: -0.6, y: -0.1, z: 0.9,
+        .to(target,{x: -0.6, y: -0.1, z: 0.9,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .to('.hero--scroller', {opacity: 0, y: '150%',
@@ -160,12 +191,12 @@ async function setupViewer(){
         .addLabel("Performance")
 
         // // POWER SECTION
-        .to(camera.position,  {x: -0.07, y: 5.45, z: -3.7,
+        .to(position,  {x: -0.07, y: 5.45, z: -3.7,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             // snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
-        .to(camera.target, {x: -0.04, y: -0.52, z: 0.61,
+        .to(target, {x: -0.04, y: -0.52, z: 0.61,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .to('.performance--content', {autoAlpha: 0, ease: "power4.out",
@@ -181,12 +212,12 @@ async function setupViewer(){
 
 
         // // AUTOFOCUS SECTION
-        .to(camera.position,{x: -5.5, y: 1.7, z: 5,
+        .to(position,{x: -5.5, y: 1.7, z: 5,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             // snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
-        .to(camera.target, {x: 0.04, y: 0.2, z: 0.6,
+        .to(target, {x: 0.04, y: 0.2, z: 0.6,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .fromTo('.autofocus--content', {opacity: 0, y: '130%'}, {opacity: 1, y: '0%', duration: 0.5, ease: "power4.out",
@@ -195,12 +226,12 @@ async function setupViewer(){
         .addLabel("Autofocus")
 
         // Explore SECTION
-        .to(camera.position,{x: -0.3, y: -0.3, z: -4.85,
+        .to(position,{x: -0.3, y: -0.3, z: -4.85,
             scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             // snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
-        .to(camera.target, {x: -0.9, y: -0.17, z: 0.1,
+        .to(target, {x: -0.9, y: -0.17, z: 0.1,
             scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
         .fromTo('.explore--content', {opacity: 0, x: '130%'}, {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out",
@@ -208,7 +239,27 @@ async function setupViewer(){
         }})
         .addLabel("Explore")
 
-
+        let tm = {x: 0}
+        const expandUpdate = ()=> {
+            for (const o of lensObjects) {
+                o.position.z = o.userData.__startPos + tm.x * o.userData.__deltaPos
+            }
+            viewer.setDirty()
+            viewer.renderer.resetShadows()
+        }
+        // Test SECTION
+        tl.to(tm,{x: 1,
+            scrollTrigger: { trigger: ".cam-view-6",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
+            }, onUpdate: expandUpdate
+        })
+        tl.to(tm,{x: 1,
+            scrollTrigger: { trigger: ".cam-view-7",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
+            }, onUpdate: expandUpdate
+        })
+        tl.to(tm,{x: 0,
+            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
+            }, onUpdate: expandUpdate
+        })
     }
 
     let needsUpdate = true;
@@ -218,6 +269,8 @@ async function setupViewer(){
 
     viewer.addEventListener('preFrame', ()=>{
         if(needsUpdate){
+            camera.position.copy(position)
+            camera.target.copy(target)
             camera.positionUpdated(false)
             camera.targetUpdated(true)
             needsUpdate = false;
@@ -248,8 +301,8 @@ async function setupViewer(){
     function exploreAnimation(){
         const tlExplore = gsap.timeline()
 
-        tlExplore.to(camera.position,{x: 5, y: 0.3, z: -4.5, duration: 2.5, onUpdate})
-        .to(camera.target, {x: 0.16, y: -0.13, z: 0.5, duration: 2.5}, '-=2.5')
+        tlExplore.to(position,{x: 5, y: 0.3, z: -4.5, duration: 2.5, onUpdate})
+        .to(target, {x: 0.16, y: -0.13, z: 0.5, duration: 2.5, onUpdate}, '-=2.5')
         .fromTo('.header', {opacity: 0}, {opacity: 1, duration: 1.5, ease: "power4.out"}, '-=2.5')
         .to('.explore--content', {opacity: 0, x: '130%', duration: 1.5, ease: "power4.out", onComplete: onCompleteExplore}, '-=2.5')
     }
@@ -274,8 +327,8 @@ async function setupViewer(){
 
         const tlExit = gsap.timeline()
 
-        tlExit.to(camera.position,{x: -0.3, y: -0.3, z: -4.85, duration: 1.2, ease: "power4.out", onUpdate})
-        .to(camera.target, {x: -0.9, y: -0.17, z: 0.1, duration: 1.2, ease: "power4.out"}, '-=1.2')
+        tlExit.to(position,{x: -0.3, y: -0.3, z: -4.85, duration: 1.2, ease: "power4.out", onUpdate})
+        .to(target, {x: -0.9, y: -0.17, z: 0.1, duration: 1.2, ease: "power4.out", onUpdate}, '-=1.2')
         .to('.explore--content', {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out"}, '-=1.2')
         setLensAppearance(true)
         lensOnly = false
@@ -295,23 +348,11 @@ async function setupViewer(){
         }
     })
 
+
     function setLensAppearance(_value: boolean){
-        viewer.scene.findObjectsByName('Circle002')[0].visible = _value
-        viewer.scene.findObjectsByName('+Sphere001001')[0].visible = _value
-        viewer.scene.findObjectsByName('new')[0].visible = _value
-        viewer.scene.findObjectsByName('+Plane008001')[0].visible = _value
-        viewer.scene.findObjectsByName('+SideButtons001')[0].visible = _value
-        viewer.scene.findObjectsByName('Rings2001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Rings1001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Circle003001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Sphere003001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Circle001001')[0].visible = _value
-        viewer.scene.findObjectsByName('Text001')[0].visible = _value
-        viewer.scene.findObjectsByName('Plane006001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Plane005001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Sphere001')[0].visible = _value
-        viewer.scene.findObjectsByName('+Cylinder001')[0].visible = _value
-        viewer.scene.findObjectsByName('+BODY044001')[0].visible = _value
+        for (const o of lensObjects) {
+            o.visible = _value
+        }
         viewer.scene.setDirty({sceneUpdate: true})
     }
 }
