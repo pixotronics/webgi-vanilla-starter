@@ -23,6 +23,7 @@ time, mark, audio, video {
 	font: inherit;
 	vertical-align: baseline;
   overscroll-behavior: none;
+  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
@@ -70,6 +71,29 @@ table {
   margin: 0;
   padding: 0;
   position:fixed;
+}
+
+/* LOADER */
+.loader {
+  display: flex;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: #e1dedf;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress {
+  position: absolute;
+  top: 60%;
+  width: 100%;
+  height: 1px;
+  background: #c42323;
+	transform: scaleX(0);
+	transition: transform 1s;
+	z-index: 10;
 }
 
 /* HEADER SECTION */
@@ -127,6 +151,7 @@ table {
   justify-content: center;
   margin: 0;
   padding: 0;
+  scroll-snap-align: start;
 }
 
 .hero--container{

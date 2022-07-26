@@ -10,7 +10,7 @@ import {
     TonemapPlugin,
     SSAOPlugin,
     GroundPlugin,
-    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin,
+    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin, IPerspectiveCameraOptions,
 } from "webgi"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -28,7 +28,7 @@ async function setupViewer(){
 
     const isMobile = mobileAndTabletCheck()
 
-    viewer.renderer.displayCanvasScaling = Math.min(window.devicePixelRatio, 1.5)
+    viewer.renderer.displayCanvasScaling = Math.min(window.devicePixelRatio, 1)
 
     // viewer.renderer.rendererObject.shadowMap.type = PCFSoftShadowMap
 
@@ -68,11 +68,33 @@ async function setupViewer(){
     bloom.pass!.passObject.bloomIterations = 2
     ssao.passes.ssao.passObject.material.defines.NUM_SAMPLES = 4
 
-    if(isMobile){
-        ssr.passes.ssr.passObject.stepCount /= 2
-        bloom.enabled = false
-    }
+    //Loader
+    const importer = manager.importer
 
+    // Callbacks for start, progress, load complete and stop.
+    importer?.addEventListener("onStart", (ev) => {
+        // console.log("onStart", ev);
+        // document.getElementById("progressState").textContent =
+        // "Progress: " + (ev.loaded / ev.total) * 100 + "%";
+    });
+    importer?.addEventListener("onProgress", (ev) => {
+        // console.log("onProgress", (ev.loaded / ev.total));
+        const progressRatio = (ev.loaded / ev.total)
+        // loadingBarElement.style.transform = `scaleX(${progressRatio})`
+        document.querySelector('.progress')?.setAttribute('style',`transform: scaleX(${progressRatio})`)
+        // "Progress: " + (ev.loaded / ev.total) * 100 + "%";
+    });
+    importer?.addEventListener("onLoad", (ev) => {
+        // console.log("onLoad", ev)
+        introAnimation()
+        // document.getElementById("progressState").textContent =
+        // "Progress: " + "Loaded";
+    });
+    importer?.addEventListener("onStop", (ev) => {
+        // console.log("onStop", ev);
+        // document.getElementById("progressState").textContent =
+        // "Progress: " + "Stopped";
+    });
 
     viewer.renderer.refreshPipeline()
 
@@ -81,19 +103,32 @@ async function setupViewer(){
     const camera = viewer.scene.activeCamera
     if(camera.controls) camera.controls.enabled = false
 
+    if(isMobile){
+        ssr.passes.ssr.passObject.stepCount /= 2
+        bloom.enabled = false
+        const options = camera.getCameraOptions();
+        console.log(options)
+        options.fov = 65;
+        camera.setCameraOptions(options);
+    }
+
     window.scrollTo(0,0)
 
     await timeout(50) // Wait 50ms
 
-    gsap.timeline()
-    .fromTo(camera.position,{x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, delay: 1, onUpdate})
-    .fromTo(camera.target, {x: 8.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4, onUpdate }, '-=4')
-    .fromTo('.header--container', {opacity: 0, y: '-100%'}, {opacity: 1, y: '0%', ease: "power1.inOut", duration: 0.8}, '-=1')
-    .fromTo('.hero--scroller', {opacity: 0, y: '150%'}, {opacity: 1, y: '0%', ease: "power4.inOut", duration: 1}, '-=1')
-    .fromTo('.hero--content', {opacity: 0, x: '-50%'}, {opacity: 1, x: '0%', ease: "power4.inOut", duration: 1.8, onComplete: setupScrollAnimation}, '-=1')
+    function introAnimation(){
+        const introTL = gsap.timeline()
+        introTL
+        .to('.loader', {y: '150%', duration: 0.8, ease: "power4.inOut"})
+        .fromTo(camera.position, {x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, onUpdate})
+        .fromTo(camera.target, {x: 8.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4 }, '-=4')
+        .fromTo('.header--container', {opacity: 0, y: '-100%'}, {opacity: 1, y: '0%', ease: "power1.inOut", duration: 0.8}, '-=1')
+        .fromTo('.hero--scroller', {opacity: 0, y: '150%'}, {opacity: 1, y: '0%', ease: "power4.inOut", duration: 1}, '-=1')
+        .fromTo('.hero--content', {opacity: 0, x: '-50%'}, {opacity: 1, x: '0%', ease: "power4.inOut", duration: 1.8, onComplete: setupScrollAnimation}, '-=1')
+    }
 
     function setupScrollAnimation(){
-        document.body.setAttribute("style", "overflow-y: auto")
+        document.body.setAttribute("style", "overflow-y: scroll")
 
         const tl = gsap.timeline({ default: {ease: 'none'}})
 
@@ -111,19 +146,19 @@ async function setupViewer(){
 
         .to('.hero--content', {opacity: 0, xPercent: '-100', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top top", scrub: 1, immediateRender: false, pin: '.hero--content',
-            snap: { snapTo: 1, duration: 0.8, ease: "power4.inOut"}
+            // snap: { snapTo: 1, duration: 0.8, ease: "power4.inOut"}
         }}).addLabel("start")
 
         .fromTo('.performance--content', {opacity: 0, x: '110%'}, {opacity: 1, x: '0%', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container',
-                snap: { snapTo: 2, duration: 0.8, ease: "power4.inOut"}
+                // snap: { snapTo: 2, duration: 0.8, ease: "power4.inOut"}
         }})
         .addLabel("Performance")
 
         // // POWER SECTION
         .to(camera.position,  {x: -0.07, y: 5.45, z: -3.7,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
+            // snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
         .to(camera.target, {x: -0.04, y: -0.52, z: 0.61,
@@ -144,7 +179,7 @@ async function setupViewer(){
         // // AUTOFOCUS SECTION
         .to(camera.position,{x: -5.5, y: 1.7, z: 5,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
+            // snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
         .to(camera.target, {x: 0.04, y: 0.2, z: 0.6,
@@ -158,7 +193,7 @@ async function setupViewer(){
         // Explore SECTION
         .to(camera.position,{x: -0.3, y: -0.3, z: -4.85,
             scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
-            snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
+            // snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
         .to(camera.target, {x: -0.9, y: -0.17, z: 0.1,
