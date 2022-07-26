@@ -2,7 +2,15 @@ import {
     ViewerApp,
     AssetManagerPlugin,
     addBasePlugins,
-    timeout, SSRPlugin,
+    timeout,
+    SSRPlugin,
+    mobileAndTabletCheck,
+    GBufferPlugin,
+    ProgressivePlugin,
+    TonemapPlugin,
+    SSAOPlugin,
+    GroundPlugin,
+    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin,
 } from "webgi"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -17,13 +25,54 @@ async function setupViewer(){
         useRgbm: true,
         useGBufferDepth: true,
     })
+
+    const isMobile = mobileAndTabletCheck()
+
     viewer.renderer.displayCanvasScaling = Math.min(window.devicePixelRatio, 1.5)
+
     // viewer.renderer.rendererObject.shadowMap.type = PCFSoftShadowMap
 
     const manager = await viewer.addPlugin(AssetManagerPlugin)
-    await addBasePlugins(viewer)
 
-    viewer.getPlugin(SSRPlugin)!.passes.ssr.passObject.lowQualityFrames = 0
+
+    // await addBasePlugins(viewer)
+    // adding manually
+
+    await viewer.addPlugin(GBufferPlugin)
+    // await viewer.addPlugin(FullScreenPlugin)
+    await viewer.addPlugin(new ProgressivePlugin(32))
+    await viewer.addPlugin(new TonemapPlugin(true, true))
+    const ssr = await viewer.addPlugin(SSRPlugin)
+    const ssao = await viewer.addPlugin(SSAOPlugin)
+    // await viewer.addPlugin(DiamondPlugin)
+    // await viewer.addPlugin(FrameFadePlugin)
+    // await viewer.addPlugin(GLTFAnimationPlugin)
+    await viewer.addPlugin(GroundPlugin)
+    // await viewer.addPlugin(ContactShadowGroundPlugin)
+    const bloom = await viewer.addPlugin(BloomPlugin)
+    // await viewer.addPlugin(AnisotropyPlugin)
+    // await viewer.addPlugin(ThinFilmLayerPlugin)
+    // await viewer.addPlugin(NoiseBumpMaterialPlugin)
+    // await viewer.addPlugin(CustomBumpMapPlugin)
+    // await viewer.addPlugin(ClearcoatTintPlugin)
+    // await viewer.addPlugin(VelocityBufferPlugin, false)
+    await viewer.addPlugin(TemporalAAPlugin)
+    // await viewer.addPlugin(CameraViewPlugin)
+    await viewer.addPlugin(RandomizedDirectionalLightPlugin, false)
+    // await viewer.addPlugin(HDRiGroundPlugin, false)
+    // await viewer.addPlugin(DepthOfFieldPlugin, false)
+    // await viewer.addPlugin(SSContactShadows, false)
+    // await viewer.addPlugin(KTX2LoadPlugin)
+
+    ssr!.passes.ssr.passObject.lowQualityFrames = 0
+    bloom.pass!.passObject.bloomIterations = 2
+    ssao.passes.ssao.passObject.material.defines.NUM_SAMPLES = 4
+
+    if(isMobile){
+        ssr.passes.ssr.passObject.stepCount /= 2
+        bloom.enabled = false
+    }
+
 
     viewer.renderer.refreshPipeline()
 
@@ -47,7 +96,7 @@ async function setupViewer(){
         document.body.setAttribute("style", "overflow-y: auto")
 
         const tl = gsap.timeline({ default: {ease: 'none'}})
-        
+
         // PERFORMANCE SECTION
         tl.to(camera.position, {x: -2.5, y: 0.2, z: -3.5,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
@@ -58,7 +107,7 @@ async function setupViewer(){
         })
         .to('.hero--scroller', {opacity: 0, y: '150%',
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top center", scrub: 1, immediateRender: false, pin: '.hero--scroller--container',
-        }}) 
+        }})
 
         .to('.hero--content', {opacity: 0, xPercent: '-100', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top top", scrub: 1, immediateRender: false, pin: '.hero--content',
@@ -66,14 +115,14 @@ async function setupViewer(){
         }}).addLabel("start")
 
         .fromTo('.performance--content', {opacity: 0, x: '110%'}, {opacity: 1, x: '0%', ease: "power4.out",
-            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container', 
+            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container',
                 snap: { snapTo: 2, duration: 0.8, ease: "power4.inOut"}
         }})
         .addLabel("Performance")
 
         // // POWER SECTION
         .to(camera.position,  {x: -0.07, y: 5.45, z: -3.7,
-            scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
@@ -94,7 +143,7 @@ async function setupViewer(){
 
         // // AUTOFOCUS SECTION
         .to(camera.position,{x: -5.5, y: 1.7, z: 5,
-            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
@@ -108,7 +157,7 @@ async function setupViewer(){
 
         // Explore SECTION
         .to(camera.position,{x: -0.3, y: -0.3, z: -4.85,
-            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false,
             snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
         }, onUpdate
         })
