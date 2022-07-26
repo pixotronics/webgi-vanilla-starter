@@ -88,12 +88,14 @@ table {
 .progress {
   position: absolute;
   top: 60%;
-  width: 100%;
+  width: 50%;
   height: 1px;
   background: #c42323;
 	transform: scaleX(0);
 	transition: transform 1s;
+  transform-origin: left;
 	z-index: 10;
+  margin: 0 5%;
 }
 
 /* HEADER SECTION */
@@ -251,7 +253,7 @@ h1{
 }
 
 .hero--scroller--container{
-  bottom: 30px;
+  bottom: 0;
   align-items: center;
   width: 170px;
   align-content: center;
