@@ -60,6 +60,7 @@ async function setupViewer(){
     // Interface Elements
     const exploreView = document.querySelector('.cam-view-5') as HTMLElement
     const canvasView = document.getElementById('webgi-canvas') as HTMLElement
+    const canvasContainer = document.getElementById('webgi-canvas-container') as HTMLElement
     const exitContainer = document.querySelector('.exit--container') as HTMLElement    
     const loaderElement = document.querySelector('.loader') as HTMLElement
     const header = document.querySelector('.header') as HTMLElement
@@ -250,6 +251,7 @@ async function setupViewer(){
     document.querySelector('.button-explore')?.addEventListener('click', () => {
         exploreView.setAttribute("style", "pointer-events: none")
         canvasView.setAttribute("style", "pointer-events: all")
+        canvasContainer.setAttribute("style", "z-index: 1")
         header.setAttribute("style", "position: fixed")
         document.body.setAttribute("style", "overflow-y: hidden")
         document.body.setAttribute("style", "cursor: grab")
@@ -273,6 +275,7 @@ async function setupViewer(){
     document.querySelector('.button--exit')?.addEventListener('click', () => {
         exploreView.setAttribute("style", "pointer-events: all")
         canvasView.setAttribute("style", "pointer-events: none")
+        canvasContainer.setAttribute("style", "z-index: unset")
         document.body.setAttribute("style", "overflow-y: auto")
         exitContainer.setAttribute("style", "display: none")
         header.setAttribute("style", "position: absolute")
