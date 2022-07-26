@@ -86,6 +86,9 @@ table {
   background-color: #e1dedf;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 2em;
+  font-size: 12px;
 }
 
 .progress {
@@ -121,12 +124,17 @@ table {
 
 .header--brand{
   width: 140px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .header--menu {
   display: inline-flex;
   gap: 1em;
   align-items: center;
+  
 }
 
 .header--menu li{
@@ -135,6 +143,10 @@ table {
   transition: all .6s ease-in-out;
   border-radius: 50px;
   pointer-events: all;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .header--menu li:hover{
@@ -157,6 +169,10 @@ table {
   margin: 0;
   padding: 0;
   scroll-snap-align: start;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .hero--container{
