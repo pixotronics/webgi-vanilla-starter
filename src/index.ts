@@ -2,7 +2,7 @@ import {
     ViewerApp,
     AssetManagerPlugin,
     addBasePlugins,
-    timeout, SSRPlugin, PCFSoftShadowMap,
+    timeout, SSRPlugin,
 } from "webgi"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -38,30 +38,44 @@ async function setupViewer(){
 
     gsap.timeline()
     .fromTo(camera.position,{x: 3.6, y: -0.04, z: -3.93}, {x: -3.6, y: -0.04, z: -3.93, duration: 4, delay: 1, onUpdate})
-    .fromTo(camera.target, {x: 8.16, y: -0.13, z: 0.51}, {x: 0.16, y: -0.13, z: 0.51, duration: 4, onUpdate }, '-=4')
+    .fromTo(camera.target, {x: 8.16, y: -0.13, z: 0.51}, {x: 0.86, y: -0.13, z: 0.51, duration: 4, onUpdate }, '-=4')
     .fromTo('.header--container', {opacity: 0, y: '-100%'}, {opacity: 1, y: '0%', ease: "power1.inOut", duration: 0.8}, '-=1')
+    .fromTo('.hero--scroller', {opacity: 0, y: '150%'}, {opacity: 1, y: '0%', ease: "power4.inOut", duration: 1}, '-=1')
     .fromTo('.hero--content', {opacity: 0, x: '-50%'}, {opacity: 1, x: '0%', ease: "power4.inOut", duration: 1.8, onComplete: setupScrollAnimation}, '-=1')
 
     function setupScrollAnimation(){
-        const tl = gsap.timeline({ default: {ease: 'none'}})
+        document.body.setAttribute("style", "overflow-y: auto")
 
+        const tl = gsap.timeline({ default: {ease: 'none'}})
+        
         // PERFORMANCE SECTION
         tl.to(camera.position, {x: -2.5, y: 0.2, z: -3.5,
-            scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false}, onUpdate
+            scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
+
         .to(camera.target,{x: -0.6, y: -0.1, z: 0.9,
             scrollTrigger: { trigger: ".cam-view-2",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
         })
+        .to('.hero--scroller', {opacity: 0, y: '150%',
+            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top center", scrub: 1, immediateRender: false, pin: '.hero--scroller--container',
+        }}) 
+
         .to('.hero--content', {opacity: 0, xPercent: '-100', ease: "power4.out",
-            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top top", scrub: 1, immediateRender: false, pin: '.hero--content'
-        }})
+            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: "top top", scrub: 1, immediateRender: false, pin: '.hero--content',
+            snap: { snapTo: 1, duration: 0.8, ease: "power4.inOut"}
+        }}).addLabel("start")
+
         .fromTo('.performance--content', {opacity: 0, x: '110%'}, {opacity: 1, x: '0%', ease: "power4.out",
-            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container'
+            scrollTrigger: { trigger: ".cam-view-2", start: "top bottom", end: 'top top', scrub: 1, immediateRender: false, pin: '.performance--container', 
+                snap: { snapTo: 2, duration: 0.8, ease: "power4.inOut"}
         }})
+        .addLabel("Performance")
 
         // // POWER SECTION
         .to(camera.position,  {x: -0.07, y: 5.45, z: -3.7,
-            scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
+            scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            snap: { snapTo: 3, duration: 0.8, ease: "power4.inOut"}
+        }, onUpdate
         })
         .to(camera.target, {x: -0.04, y: -0.52, z: 0.61,
             scrollTrigger: { trigger: ".cam-view-3",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
@@ -75,10 +89,14 @@ async function setupViewer(){
         .fromTo('.power--features--img', {opacity: 0, x: '110%'}, {opacity: 1, x: '0%', ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-3", start: "top 20%", end: 'top top', scrub: 1, immediateRender: false
         }})
+        .addLabel("Power")
+
 
         // // AUTOFOCUS SECTION
         .to(camera.position,{x: -5.5, y: 1.7, z: 5,
-            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
+            scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            snap: { snapTo: 4, duration: 0.8, ease: "power4.inOut"}
+        }, onUpdate
         })
         .to(camera.target, {x: 0.04, y: 0.2, z: 0.6,
             scrollTrigger: { trigger: ".cam-view-4",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
@@ -86,6 +104,22 @@ async function setupViewer(){
         .fromTo('.autofocus--content', {opacity: 0, y: '130%'}, {opacity: 1, y: '0%', duration: 0.5, ease: "power4.out",
             scrollTrigger: { trigger: ".cam-view-4", start: "top 20%", end: "top top", scrub: 1, immediateRender: false
         }})
+        .addLabel("Autofocus")
+
+        // Explore SECTION
+        .to(camera.position,{x: -0.3, y: -0.3, z: -4.85,
+            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false, 
+            snap: { snapTo: 5, duration: 0.8, ease: "power4.inOut"}
+        }, onUpdate
+        })
+        .to(camera.target, {x: -0.9, y: -0.17, z: 0.1,
+            scrollTrigger: { trigger: ".cam-view-5",  start: "top bottom", end: "top top", scrub: true, immediateRender: false }, onUpdate
+        })
+        .fromTo('.explore--content', {opacity: 0, x: '130%'}, {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out",
+            scrollTrigger: { trigger: ".cam-view-5", start: "top bottom", end: "top top", scrub: 1, immediateRender: false
+        }})
+        .addLabel("Explore")
+
 
     }
 
@@ -101,6 +135,59 @@ async function setupViewer(){
             needsUpdate = false;
         }
     })
+
+    // INTERFACE ELEMENTS
+    const exploreView = document.querySelector('.cam-view-5')
+    const canvasView = document.getElementById('webgi-canvas')
+    const exitContainer = document.querySelector('.exit--container')
+
+    // KNOW MORE EVENT
+    document.querySelector('.button-know-more')?.addEventListener('click', () => {
+        const element = document.querySelector('.cam-view-2')
+        window.scrollTo({top: element?.getBoundingClientRect().top, left: 0, behavior: 'smooth'})
+    })
+
+    // EXPLORE ALL FEATURES EVENT
+    document.querySelector('.button-explore')?.addEventListener('click', () => {
+        exploreView?.setAttribute("style", "pointer-events: none")
+        canvasView?.setAttribute("style", "pointer-events: all")
+        document.body.setAttribute("style", "overflow-y: hidden")
+        document.body.setAttribute("style", "cursor: grab")
+        exploreAnimation()
+    })
+
+    function exploreAnimation(){
+        const tlExplore = gsap.timeline()
+
+        tlExplore.to(camera.position,{x: 5, y: 0.3, z: -4.5, duration: 2.5, onUpdate})
+        .to(camera.target, {x: 0, y: -0.2, z: 0, duration: 2.5}, '-=2.5')
+        .to('.explore--content', {opacity: 0, x: '130%', duration: 1.5, ease: "power4.out", onComplete: onCompleteExplore}, '-=2.5')
+    }
+
+    function onCompleteExplore(){
+        exitContainer?.setAttribute("style", "display: flex")
+        if(camera.controls) camera.controls.enabled = true
+    }
+
+    document.querySelector('.button--exit')?.addEventListener('click', () => {
+        exploreView?.setAttribute("style", "pointer-events: all")
+        canvasView?.setAttribute("style", "pointer-events: none")
+        document.body.setAttribute("style", "overflow-y: auto")
+        exitContainer?.setAttribute("style", "display: none")
+        exitAnimation()
+    })
+
+    // EXIT EVENT
+    function exitAnimation(){
+        if(camera.controls) camera.controls.enabled = false
+
+        const tlExit = gsap.timeline()
+
+        tlExit.to(camera.position,{x: -0.3, y: -0.3, z: -4.85, duration: 1.2, ease: "power4.out", onUpdate})
+        .to(camera.target, {x: -0.9, y: -0.17, z: 0.1, duration: 1.2, ease: "power4.out"}, '-=1.2')
+        .to('.explore--content', {opacity: 1, x: '0%', duration: 0.5, ease: "power4.out"}, '-=1.2')
+
+    }
 
 }
 
