@@ -10,7 +10,7 @@ import {
     SSAOPlugin,
     GroundPlugin,
     FrameFadePlugin,
-    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin, AssetImporter,
+    BloomPlugin, TemporalAAPlugin, RandomizedDirectionalLightPlugin, AssetImporter, createStyles,
 } from "webgi"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -56,12 +56,12 @@ async function setupViewer(){
     const camera = viewer.scene.activeCamera
     const position = camera.position
     const target = camera.target
-    
+
     // Interface Elements
     const exploreView = document.querySelector('.cam-view-5') as HTMLElement
     const canvasView = document.getElementById('webgi-canvas') as HTMLElement
     const canvasContainer = document.getElementById('webgi-canvas-container') as HTMLElement
-    const exitContainer = document.querySelector('.exit--container') as HTMLElement    
+    const exitContainer = document.querySelector('.exit--container') as HTMLElement
     const loaderElement = document.querySelector('.loader') as HTMLElement
     const header = document.querySelector('.header') as HTMLElement
     const bodyButton =  document.querySelector('.button--body') as HTMLElement
@@ -233,12 +233,31 @@ async function setupViewer(){
         needsUpdate = true;
     }
 
+    if(!isMobile){
+        const sections = document.querySelectorAll('.section')
+        const sectionTops: number[] = []
+        sections.forEach(section=> {
+            sectionTops.push(section.getBoundingClientRect().top)
+        })
+        setupCustomWheelSmoothScrolling(viewer, document.documentElement, sectionTops, )
+    }
+    else {
+        createStyles(`
+html, body {
+  scroll-snap-type: y mandatory;
+}
+
+        `)
+    }
+
+
     viewer.addEventListener('preFrame', ()=>{
         if(needsUpdate){
             camera.positionUpdated(false)
             camera.targetUpdated(true)
             needsUpdate = false;
         }
+
     })
 
     // KNOW MORE EVENT
@@ -316,6 +335,48 @@ async function setupViewer(){
         }
         viewer.scene.setDirty({sceneUpdate: true})
     }
+
+}
+
+function setupCustomWheelSmoothScrolling(viewer: ViewerApp, element: HTMLElement, snapPositions: number[], speed = 1.5){
+    let customScrollY = element.scrollTop
+    let frameDelta = 0
+    let scrollVelocity = 0
+
+    window.addEventListener('wheel', (e: WheelEvent)=>{
+        e.preventDefault()
+        e.stopPropagation()
+        // todo: check delta mode?
+        frameDelta = Math.min(Math.max(e.deltaY * speed, -window.innerHeight / 3), window.innerHeight / 3)
+        return false
+    }, {passive: false})
+
+
+    const idleSpeedFactor = 0.05
+    const snapSpeedFactor = 0.4
+    const snapProximity = window.innerHeight / 4
+    const wheelDamping = 0.25
+    const velocityDamping = 0.2
+
+    viewer.addEventListener('preFrame', ()=>{
+            if (Math.abs(frameDelta) < 1) {
+                const nearestSection = snapPositions.reduce((prev, curr) => Math.abs(curr - customScrollY) < Math.abs(prev - customScrollY) ? curr : prev)
+                const d = nearestSection - customScrollY
+                scrollVelocity = d * (Math.abs(d) < snapProximity ? snapSpeedFactor : idleSpeedFactor);
+            }
+            scrollVelocity += frameDelta * wheelDamping
+            frameDelta *= (1.-wheelDamping)
+            if (Math.abs(frameDelta) < 0.01) frameDelta = 0
+            if (Math.abs(scrollVelocity) > 0.01) {
+                customScrollY = Math.max(customScrollY + scrollVelocity * velocityDamping, 0)
+                element.scrollTop = customScrollY
+                scrollVelocity *= (1.-velocityDamping)
+            } else {
+                scrollVelocity = 0
+            }
+
+    })
+
 }
 
 setupViewer()
