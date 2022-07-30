@@ -17,7 +17,8 @@ import {
     addBasePlugins,
     ITexture,
 
-    THREE, // Import THREE.js internals
+    // Color, // Import THREE.js internals
+    // Texture, // Import THREE.js internals
 } from "webgi";
 import "./styles.css";
 
@@ -51,13 +52,13 @@ async function setupViewer(){
 
     viewer.renderer.refreshPipeline()
 
-    await manager.addFromPath("./assets/scene.glb")
+    await manager.addFromPath("./assets/classic-watch.glb")
 
-    await viewer.scene.setEnvironment(
-        await manager.importer!.importSinglePath<ITexture>(
-            "./assets/environment.hdr"
-        )
-    );
+    // await viewer.scene.setEnvironment(
+    //     await manager.importer!.importSinglePath<ITexture>(
+    //         "./assets/environment.hdr"
+    //     )
+    // );
 
 
 }
