@@ -298,6 +298,7 @@ html, body {
         document.body.style.overflowY = "auto"
         exitContainer.style.display = "none"
         header.style.position = "absolute"
+        document.body.style.cursor = "default"
         exitAnimation()
     })
 
