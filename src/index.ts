@@ -19,11 +19,12 @@ import {
     addBasePlugins,
     ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin, CanvasSnipperPlugin,
 
+    IViewerPlugin,
+
     // Color, // Import THREE.js internals
     // Texture, // Import THREE.js internals
 } from "webgi";
 import "./styles.css";
-import {IViewerPlugin} from "webgi/interfaces";
 
 async function setupViewer(){
 
