@@ -29,6 +29,7 @@ To use the different version:
 * Run `npm install` to update the dependencies.
 * Delete `.cache` folder created by parcel bundler: `rm -rf .cache`
 * Run `npm start` or `npm run build` to run or build the project.
+* If loading a .gltf/glb model from the WebGI Scene Editor in the asset manager results in missing textures, create a new folder and place the gltf/glb model inside along with all of it's textures. Zip the folder and route the asset manager to the .zip instead of the standalone .gltf/glb. The textures should be automatically located and the issue should be resolved.
 
 ## Documentation
 For the latest version and documentation: [WebGi Docs](https://webgi.xyz/docs/).
