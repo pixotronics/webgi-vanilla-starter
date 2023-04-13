@@ -27,7 +27,6 @@ Check the [webgi manual](https://webgi.xyz/docs/manual/#sdk-links) for the lates
 To use the different version:
 * Update the version number in `package.json` file for both `webgi` and `@types/webgi`.
 * Run `npm install` to update the dependencies.
-* Delete `.cache` folder created by parcel bundler: `rm -rf .cache`
 * Run `npm run dev` or `npm run build` to run or build the project.
 
 ## Documentation
