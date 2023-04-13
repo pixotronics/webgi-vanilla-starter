@@ -4,16 +4,16 @@
   "description": "WebGi + TypeScript example starter project",
   "main": "index.html",
   "scripts": {
-    "start": "parcel index.html",
-    "build": "parcel build index.html --no-minify --public-url ./"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@types/three": "^0.139.0",
-    "parcel-bundler": "^1.6.1",
-    "parcel-plugin-static-files-copy": "^2.6.0",
+    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.7.41.tgz",
     "typescript": "4.4.4",
-    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.5.8.tgz",
-    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.5.8.tgz"
+    "vite": "^4.2.1",
+    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.7.41.tgz"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"
@@ -29,5 +29,6 @@
         "staticOutDir": "assets"
       }
     ]
-  }
+  },
+  "type": "module"
 }
