@@ -11,7 +11,7 @@ npm install
 
 To run the project in development mode:
 ```bash
-npm start
+npm run dev
 ```
 Then navigate to [http://localhost:5173/index.html](http://localhost:5173/index.html) in a web browser to see the default scene in a viewer.
 
