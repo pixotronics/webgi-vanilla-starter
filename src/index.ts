@@ -65,7 +65,7 @@ async function setupViewer(){
     viewer.renderer.refreshPipeline()
 
     // Import and add a GLB file.
-    await manager.addFromPath("./assets/classic-watch.glb")
+    await viewer.load("./assets/classic-watch.glb")
 
     // Load an environment map if not set in the glb file
     // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
