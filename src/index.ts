@@ -65,10 +65,10 @@ async function setupViewer(){
     viewer.renderer.refreshPipeline()
 
     // Import and add a GLB file.
-    await viewer.load("./assets/classic-watch.glb")
+    await manager.addFromPath("./assets/classic-watch.glb")
 
     // Load an environment map if not set in the glb file
-    await viewer.setEnvironmentMap("./assets/environment.hdr");
+    // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
 
     // Add some UI for tweak and testing.
     const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
