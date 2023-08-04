@@ -31,14 +31,14 @@ async function setupViewer(){
     // Initialize the viewer
     const viewer = new ViewerApp({
         canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
-        
+
     })  
 
     // Add some plugins
     const manager = await viewer.addPlugin(AssetManagerPlugin)
 
     // Add a popup(in HTML) with download progress when any asset is downloading.
-    await viewer.addPlugin(AssetManagerBasicPopupPlugin)
+    // await viewer.addPlugin(AssetManagerBasicPopupPlugin)
 
     // Add plugins individually.
     // await viewer.addPlugin(GBufferPlugin)
@@ -72,9 +72,9 @@ async function setupViewer(){
     // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
 
     // Add some UI for tweak and testing.
-    const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
+    // const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
     // Add plugins to the UI to see their settings.
-    uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
+    // uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
 
 }
 
