@@ -44,4 +44,16 @@ body {
 #webgi-canvas-container{
   width: 100vw;
   height: 100vh;
+  margin-top: -98%;
 }
+
+
+/* #container {
+  position: relative;
+}
+#container canvas, #overlay {
+  position: absolute;
+}
+canvas {
+  border: 1px solid black;
+} */
