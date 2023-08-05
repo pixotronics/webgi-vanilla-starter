@@ -34,7 +34,6 @@ body {
   gap: 2em;
   font-size: 12px;
   font-family: "Orbitron", sans-serif;
-  display: none;
 }
 
 .progress {
@@ -65,6 +64,9 @@ section {
   scroll-snap-align: center;
 }
 
+.devnagritext {
+  font-size: 16px;
+}
 
 ::-webkit-scrollbar {
   width: 3px;
