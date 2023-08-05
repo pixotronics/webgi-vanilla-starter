@@ -4,6 +4,8 @@
   --grey2: #6e6e6e;
   --lightBlack: #464955;
   --black: #13222a;
+  --pj-golden: #F1B893
+  --pj-maroon: #70193F
 }
 
 body {
@@ -58,7 +60,7 @@ main {
   scroll-snap-type: y mandatory;
 }
 
-section {
+.section {
   width: 100vw;
   height: 100vh;
   scroll-snap-align: center;
@@ -67,6 +69,83 @@ section {
 .devnagritext {
   font-size: 16px;
 }
+
+.first {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section--one--container1 {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: fit-content;
+  /* margin-top: 8%; */
+  position: relative;
+}
+
+.first h1 {
+  font-size: 6vw;
+  font-family: 'Parisienne', cursive;
+  color: var(--lightBlack);
+}
+
+.first h1 span {
+  color: var(--red);
+}
+
+.first p {
+  font-size: 2vw;
+  font-weight: 400;
+  color: var(--lightBlack);
+}
+
+.first h3 {
+  color: var(--grey);
+  position: absolute;
+  font-size: 9vw;
+  white-space: nowrap;
+  z-index: -1;
+  text-transform: uppercase;
+  top: 50%;
+}
+
+.section--one--container2 {
+  width: 70%;
+  margin-bottom: 6%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.spec--wrapper .name {
+  font-size: 1.5vw;
+  font-weight: 400;
+  color: var(--lightBlack);
+}
+
+.value--wrapper {
+  display: flex;
+  align-items: flex-end;
+}
+
+.value--wrapper .value {
+  font-size: 2.3vw;
+  font-weight: 200;
+  font-family: "Orbitron", sans-serif;
+  color: var(--red);
+}
+.value--wrapper .unit {
+  font-size: 1vw;
+  margin: 0 5px;
+  margin-bottom: 0.5vw;
+  font-weight: 600;
+  color: var(--lightBlack);
+}
+
 
 ::-webkit-scrollbar {
   width: 3px;
