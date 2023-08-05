@@ -105,7 +105,7 @@ main {
 .first p {
   font-size: 2vw;
   font-weight: 400;
-  color: var(--lightBlack);
+  color: var(--sindoorMid);
 }
 
 .first h3 {
