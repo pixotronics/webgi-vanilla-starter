@@ -4,8 +4,11 @@
   --grey2: #6e6e6e;
   --lightBlack: #464955;
   --black: #13222a;
-  --pj-golden: #F1B893
-  --pj-maroon: #70193F
+  --sindoorMid: #990000;
+  --sindoorDark: #850101;
+  --sindoorLight: #D3212D;
+  --pj-golden: #F1B893;
+  --pj-maroon: #70193F;
 }
 
 body {
@@ -91,11 +94,11 @@ main {
 .first h1 {
   font-size: 6vw;
   font-family: 'Parisienne', cursive;
-  color: var(--lightBlack);
+  color: var(--sindoorDark);
 }
 
 .first h1 span {
-  color: var(--red);
+  color: var(--sindoorLight);
 }
 
 .first p {

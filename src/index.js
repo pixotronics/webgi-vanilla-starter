@@ -94,13 +94,13 @@ async function setupViewer(){
     })
 
     function setupScrollAnimation() {
-        // document.body.removeChild(loaderElement);
+        document.body.removeChild(loaderElement);
 
         const tl = gsap.timeline();
 
         tl.to(modelPosition, {
         x: -0.9,
-        y: -0.43,
+        y: -0.67,
         z: 0,
         scrollTrigger: {
             trigger: ".first",
