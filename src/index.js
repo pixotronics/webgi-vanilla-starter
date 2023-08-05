@@ -232,6 +232,24 @@ async function setupViewer(){
               immediateRender: false,
             },
           })
+          .to(".section--two--container1", {
+            scrollTrigger: {
+              trigger: ".section--two--container1",
+              start: "top 80%",
+              end: "bottom center",
+              toggleClass: "activeRightSpecific",
+              scrub: true,
+            },
+          })
+          .to(".section--two--container2", {
+            scrollTrigger: {
+              trigger: ".section--two--container2",
+              start: "top 80%",
+              end: "bottom center",
+              toggleClass: "resetPosition",
+              scrub: true,
+            },
+          })
           
         console.log("setupScrollAnimation");
 

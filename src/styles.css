@@ -151,6 +151,61 @@ main {
 }
 
 
+.second {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+}
+
+.section--two--container1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* transform: rotateZ(-90deg) translateY(-450px);
+  transition: all 0.5s ease-in-out;
+  opacity: 0; */
+}
+
+.second h1 {
+  font-size: 5vw;
+  font-family: "Orbitron", sans-serif;
+  color: var(--lightBlack);
+  white-space: 0px;
+}
+
+.section--two--container2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 8%;
+  /* transition: all 0.5s ease-in-out;
+  transform: translateX(450px);
+  opacity: 0; */
+}
+
+.second span {
+  font-size: 6vw;
+  font-family: "Orbitron", sans-serif;
+  color: var(--red);
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0px;
+}
+
+.second p {
+  font-size: 2rem;
+  font-family: "Orbitron", sans-serif;
+  color: var(--lightBlack);
+}
+
+.leftSide {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
 }
