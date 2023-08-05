@@ -7,6 +7,7 @@
   --sindoorMid: #990000;
   --sindoorDark: #850101;
   --sindoorLight: #D3212D;
+  --gold: #FFD700;
   --pj-golden: #F1B893;
   --pj-maroon: #70193F;
 }
@@ -108,9 +109,9 @@ main {
 }
 
 .first h3 {
-  color: var(--grey);
+  color: var(--gold);
   position: absolute;
-  font-size: 9vw;
+  font-size: 2vw;
   white-space: nowrap;
   z-index: -1;
   text-transform: uppercase;
