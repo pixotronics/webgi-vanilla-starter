@@ -66,7 +66,7 @@ async function setupViewer(){
     viewer.renderer.refreshPipeline()
 
     // Import and add a GLB file.
-    await viewer.load("./assets/ring-model.glb")
+    await viewer.load("./assets/ring-scene1.glb")
 
     // Load an environment map if not set in the glb file
     // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
