@@ -52,7 +52,7 @@ async function setupViewer(){
 
     // Import and add a GLB file.
     // await viewer.load("./assets/scene.glb")
-    const model = await manager.addFromPath("./assets/ring-scene1.glb");
+    const model = await manager.addFromPath("./assets/ring-scene2.glb");
     const object3d = model[0].modelObject;
     const modelPosition = object3d.position;
     const modelRotation = object3d.rotation;
