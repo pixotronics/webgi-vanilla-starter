@@ -206,6 +206,24 @@ main {
   margin: auto;
 }
 
+.section--three--container {
+  display: flex;
+  flex-direction: column;
+
+  width: 30%;
+  margin-left: 10%;
+  transform: translateX(-50px);
+  transition: all 0.5s ease-in-out;
+  /* opacity: 0; */
+}
+
+.rightSide {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: auto;
+}
+
 ::-webkit-scrollbar {
   width: 3px;
 }

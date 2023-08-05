@@ -137,9 +137,9 @@ async function setupViewer(){
             },
         })
         .to(modelPosition, {
-            x: -1.21,
-            y: -0.40,
-            z: 1.00,
+            x: -0.26,
+            y: 0.30,
+            z: 5.00,
             scrollTrigger: {
               trigger: ".third",
               start: "top bottom",
@@ -151,9 +151,9 @@ async function setupViewer(){
           })
     
           .to(modelRotation, {
-            x: 0.300,
-            y: 0.650,
-            z: -0.131,
+            x: 0.00,
+            y: 0.349,
+            z: 0,
             scrollTrigger: {
               trigger: ".third",
               start: "top bottom",
