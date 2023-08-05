@@ -112,8 +112,8 @@ async function setupViewer(){
         onUpdate,
         })
         .to(modelPosition, {
-            x: 0.54,
-            y: 0.00,
+            x: 0.00,
+            y: 0.58,
             z: 2.87,
             scrollTrigger: {
             trigger: ".second",
