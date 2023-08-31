@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import {defineConfig, normalizePath} from 'vite'
 import { viteStaticCopy } from 'vite-plugin-static-copy'
 import path from 'path'
 
@@ -7,8 +7,8 @@ export default defineConfig({
         viteStaticCopy({
             targets: [
                 {
-                    src: path.resolve(__dirname, './assets') + '/[!.]*', // 1️⃣
-                    dest: './assets', // 2️⃣
+                    src: normalizePath(path.resolve(__dirname, './assets') + '/[!.]*'), // 1️⃣
+                    dest: normalizePath('./assets'), // 2️⃣
                 },
             ],
         }),
