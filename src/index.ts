@@ -19,7 +19,7 @@ import {
     addBasePlugins,
     ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin, CanvasSnipperPlugin,
 
-    IViewerPlugin,
+    IViewerPlugin, FileTransferPlugin,
 
     // Color, // Import THREE.js internals
     // Texture, // Import THREE.js internals
@@ -57,6 +57,9 @@ async function setupViewer(){
 
     // or use this to add all main ones at once.
     await addBasePlugins(viewer)
+
+    // Required for downloading files from the UI 
+    await viewer.addPlugin(FileTransferPlugin)
 
     // Add more plugins not available in base, like CanvasSnipperPlugin which has helpers to download an image of the canvas.
     await viewer.addPlugin(CanvasSnipperPlugin)
