@@ -50,7 +50,7 @@ async function setupViewer(){
     // and many more...
 
     // or use this to add all main ones at once.
-    await addBasePlugins(viewer) // check the source for the list of plugins added.
+    await addBasePlugins(viewer) // check the source: https://codepen.io/repalash/pen/JjLxGmy for the list of plugins added.
 
     // Add a popup(in HTML) with download progress when any asset is downloading.
     await viewer.addPlugin(AssetManagerBasicPopupPlugin)
