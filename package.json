@@ -9,11 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@types/webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-types-0.9.0.tgz",
-    "typescript": "^5.1.3",
-    "vite": "^4.3.9",
-    "vite-plugin-static-copy": "^0.16.0",
-    "webgi": "https://storage.googleapis.com/dist.pixotronics.com/webgi/runtime/bundle-0.9.0.tgz"
+    "@types/webgi": "https://dist.pixotronics.com/webgi/runtime/bundle-types-0.11.1.tgz",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "webgi": "https://dist.pixotronics.com/webgi/runtime/bundle-0.11.1.tgz"
   },
   "resolutions": {
     "@babel/preset-env": "7.13.8"

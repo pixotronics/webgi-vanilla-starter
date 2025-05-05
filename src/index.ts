@@ -33,6 +33,8 @@ async function setupViewer(){
         canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
     })
 
+    viewer.renderer.renderScale = Math.min(window.devicePixelRatio, 2)
+
     // Add plugins individually.
     // await viewer.addPlugin(GBufferPlugin)
     // await viewer.addPlugin(new ProgressivePlugin(32))
@@ -52,9 +54,6 @@ async function setupViewer(){
     // or use this to add all main ones at once.
     await addBasePlugins(viewer) // check the source: https://codepen.io/repalash/pen/JjLxGmy for the list of plugins added.
 
-    // Add a popup(in HTML) with download progress when any asset is downloading.
-    await viewer.addPlugin(AssetManagerBasicPopupPlugin)
-
     // Required for downloading files from the UI
     await viewer.addPlugin(FileTransferPlugin)
 
@@ -62,7 +61,7 @@ async function setupViewer(){
     await viewer.addPlugin(CanvasSnipperPlugin)
 
     // Import and add a GLB file.
-    await viewer.load("./assets/classic-watch.glb")
+    await viewer.load("./classic-watch.glb")
 
     // Load an environment map if not set in the glb file
     // await viewer.setEnvironmentMap("./assets/environment.hdr");
