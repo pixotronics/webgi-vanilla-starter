@@ -17,12 +17,13 @@ import {
     GammaCorrectionPlugin,
 
     addBasePlugins,
-    ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin, CanvasSnipperPlugin,
+    ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin,
 
     IViewerPlugin, FileTransferPlugin,
 
     // Color, // Import THREE.js internals
     // Texture, // Import THREE.js internals
+    // Testing
 } from "webgi";
 import "./styles.css";
 
